@@ -1,0 +1,41 @@
+
+html, body {
+	height: 100%;
+}
+
+#illustration {
+	margin: 10px 0px 10px 0px;
+	height: 200px;
+}
+
+.q-invis {
+	display: none;
+}
+
+.correct-text {
+	color: green;
+}
+
+.incorrect-text {
+	color: red;
+}
+
+#question-panel {
+	margin: 40px 0px 40px 0px;
+}
+
+#source_id {
+	text-align: left;
+}
+
+#choose_source {
+	margin: 0px 0px 50px 0px;
+}
+
+#home-buttons {
+	margin: 0px 0px 100px 0px;
+}
+
+#home-stats {
+	margin: 30px 0px 0px 0px;
+}

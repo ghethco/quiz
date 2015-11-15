@@ -1,0 +1,49 @@
+@CHARSET "UTF-8";
+
+html, body {
+	height: 100%;
+}
+
+h1 {
+	text-align: center;
+}
+
+.login-error, .error {
+    font-size: small;
+    color: red;
+    text-align: left;
+}
+
+.valid {
+    font-size: small;
+    color: #21ff02;
+    text-align: left;
+}
+
+#matchpass {
+	text-align: left;
+}
+
+#create-button {
+	padding-top: 15px;
+}
+
+#header-row {
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+#centered-row {
+	margin-top: 50px;
+	text-align: center;
+}
+
+#error-text {
+    font-size: small;
+    color: red;
+    text-align: left;
+}
+
+#buttons-center {
+	margin-top: 200px;
+}
