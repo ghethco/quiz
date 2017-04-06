@@ -26,26 +26,26 @@ import com.avires.quiz.dao.FormValidationGroup;
 import com.avires.quiz.dao.PersistenceValidationGroup;
 import com.avires.quiz.dao.Question;
 import com.avires.quiz.dao.QuestionStats;
-import com.avires.quiz.dao.Source;
+import com.avires.quiz.dao.LearningModule;
 import com.avires.quiz.dao.User;
 import com.avires.quiz.service.AnswersService;
 import com.avires.quiz.service.QandA;
 import com.avires.quiz.service.QuestionsService;
-import com.avires.quiz.service.SourcesService;
+import com.avires.quiz.service.LearningModuleService;
 import com.avires.quiz.service.UsersService;
 
 @Controller
 public class LoginController {
 	
 	private static Logger logger = Logger.getLogger(LoginController.class);
-	private SourcesService sourcesService;
+	private LearningModuleService learningModuleService;
 	private QuestionsService questionsService;
 	private AnswersService answersService;
 	private UsersService usersService;
 
 	@Autowired
-	public void setSourcesService(SourcesService sourcesService) {
-		this.sourcesService = sourcesService;
+	public void setLearningModuleService(LearningModuleService learningModuleService) {
+		this.learningModuleService = learningModuleService;
 	}
 	
 	@Autowired
@@ -73,9 +73,12 @@ public class LoginController {
 	public String showHome(Model model, Principal principal) {
 		List<QuestionStats> stats
 				= questionsService.getStats(principal.getName());
-		List<Source> sources = sourcesService.getSources();
+		List<LearningModule> learningModules
+				= learningModuleService.getLearningModules();
+		logger.info("stats = " + stats);
+		logger.info("learningModules = " + learningModules);
 		model.addAttribute("question_counts", stats);
-		model.addAttribute("sources", sources);
+		model.addAttribute("learningModules", learningModules);
 		return "home";
 	}
 

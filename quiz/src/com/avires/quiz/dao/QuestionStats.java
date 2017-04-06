@@ -1,7 +1,7 @@
 package com.avires.quiz.dao;
 
 public class QuestionStats {
-    private Source source;
+    private LearningModule source;
     private int count;
     private int done_count;		/* count of how many questions are "done" */
     private int done_pct;		/* percentage of questions done */
@@ -9,18 +9,18 @@ public class QuestionStats {
     public QuestionStats() {
     }
 
-	public QuestionStats(Source source, int count, int done_count, int done_pct) {
+	public QuestionStats(LearningModule source, int count, int done_count, int done_pct) {
 		this.source = source;
 		this.count = count;
 		this.done_count = done_count;
 		this.done_pct = done_pct;
 	}
 
-	public Source getSource() {
+	public LearningModule getSource() {
 		return source;
 	}
 
-	public void setSource(Source source) {
+	public void setSource(LearningModule source) {
 		this.source = source;
 	}
 

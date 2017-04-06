@@ -9,7 +9,6 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,7 @@ public class QuestionsDao {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Question> getQuestions(int source_id) {
+	public List<Question> getQuestions(int learning_module_id) {
 		/*  UNTESTED
 		Query query = session().createQuery
 				("from Question where source.id=:qsource and type like :qtype");
@@ -71,8 +70,8 @@ public class QuestionsDao {
 		*/
 		
 		Criteria crit = session().createCriteria(Question.class);
-		crit.createAlias("source", "s");
-		crit.add(Restrictions.eq("s.id", source_id));
+		crit.createAlias("learningModule", "l");
+		crit.add(Restrictions.eq("l.id", learning_module_id));
 		return(crit.list());
 	}
 	
@@ -83,23 +82,25 @@ public class QuestionsDao {
      * Generate a random question from source "source_name" in the database
      */
 	@SuppressWarnings("unchecked")
-	public Question randomQuestion(int source_id) {
-		List<Question> questions_from_source = new ArrayList<Question>(); 
-		logger.info("newQuizQuestion, source_id = [" + source_id + "]");
+	public Question randomQuestion(int learning_module_id) {
+		List<Question> questions_from_learning_module = new ArrayList<Question>(); 
+		logger.info("newQuizQuestion, learning_module_id = [" + learning_module_id + "]");
 		
 		Criteria crit = session().createCriteria(Question.class);
-		crit.add(Restrictions.idEq(source_id));
-		questions_from_source = crit.list();
-        int index = new Random().nextInt(questions_from_source.size());
+		crit.add(Restrictions.idEq(learning_module_id));
+		questions_from_learning_module = crit.list();
+        int index = new Random().nextInt(questions_from_learning_module.size());
 		// logger.info("Result = " + result.toString());
-		return questions_from_source.get(index);
+		return questions_from_learning_module.get(index);
 	}
 	
-	public void newQuizByType(String source, String type, int nQuestions) {
+	public void newQuizByType(String learning_module, String type,
+			int nQuestions) {
 		current_quiz = new ArrayList<Question>();
 		Query query = session().createQuery
-				("from Question where source=:qsource and type=:qtype");
-		query.setString("qsource", source);
+				("from Question where learningModule=:qlearning_module"
+						+ " and type=:qtype");
+		query.setString("qlearning_module", learning_module);
 		query.setString("qtype", type);
 		int num_qs = 0;
 		for (Object obj: query.list()) {
@@ -111,11 +112,11 @@ public class QuestionsDao {
 		return;
 	}
 
-	public long getNumQuestions(Source source) {
+	public long getNumQuestions(LearningModule learningModule) {
 
 		Criteria crit = session().createCriteria(Question.class);
-		crit.createAlias("source", "s");
-		crit.add(Restrictions.eq("s.id", source.getId()));
+		crit.createAlias("learningModule", "l");
+		crit.add(Restrictions.eq("l.id", learningModule.getId()));
 		crit.setProjection(Projections.rowCount());
 
 		return (long)crit.uniqueResult();

@@ -35,7 +35,7 @@
 <link rel="shortcut icon" type="image/x-icon"
   href="${pageContext.request.contextPath}/static/images/favicon.ico" />
 
-<title>Glider Quiz Home Page</title>
+<title>Solar Design Fundamentals Home Page</title>
 </head>
 <body>
   <!--
@@ -57,8 +57,8 @@
               class="icon-bar"></span>
           </button>
           <a class="navbar-brand"
-            href="${pageContext.request.contextPath}/home">Glider
-            Quiz</a>
+            href="${pageContext.request.contextPath}/home">
+            Solar Design Fundamentals</a>
         </div>
         <div class="collapse navbar-collapse"
           id="bs-example-navbar-collapse-1">
@@ -79,16 +79,16 @@
       <!-- END NAVBAR -->
       <div id="home-page">
 
-        <h1>Glider Quiz Generator</h1>
+        <h1>Solar Design Fundamentals</h1>
 
         <div class="row" id="centered-row">
           <div class="col-xs-10" id="choose_source">
             <form class="form-inline" role="form">
-              <div class="form-group" id="sources_form_group">
+              <div class="form-group" id="learning_modules_form_group">
                 <label for="inputSource" class="col-sm-3 control-label">Choose
-                  Source</label>
+                  Module</label>
                 <div class="col-sm-7">
-                  <sf:select path="sources" class="form-control"
+                  <sf:select path="learningModules" class="form-control"
                     id="selectSource" multiple="false">
                     <c:forEach items="${question_counts}" var="item"
                       varStatus="count">
@@ -97,7 +97,7 @@
                     </c:forEach>
                   </sf:select>
                   <div id="error-text">
-                    <sf:errors path="sources"></sf:errors>
+                    <sf:errors path="learningModules"></sf:errors>
                   </div>
                 </div>
             </form>
@@ -110,11 +110,11 @@
             <sec:authorize access="isAuthenticated()">
               <div class="col-xs-2">
                 <a class="btn btn-primary" id="newquiz-button"
-                  role="button">New Glider Quiz</a>
+                  role="button">Go To Module</a>
               </div>
               <div class="col-xs-2">
                 <a class="btn btn-primary" id="reset_stats-button"
-                  role="button">Reset Stats</a>
+                  role="button">Reset Quiz Stats</a>
               </div>
             </sec:authorize>
           </div>
@@ -122,14 +122,14 @@
 
 
         <div class="row" id="row">
-          <H4>Question Stats</H4>
+          <H4>Module Quiz Stats</H4>
           <div class="col-xs-2"></div>
           <div class="col-xs-8" id="home-stats">
             <table id="stats-table" class="table table-bordered"
               align="left">
               <tr>
-                <th>Source</th>
-                <th>Count</th>
+                <th>Module</th>
+                <th>Question Count</th>
               </tr>
               <c:forEach var="question_stats" items="${question_counts}"
                 varStatus="loop">

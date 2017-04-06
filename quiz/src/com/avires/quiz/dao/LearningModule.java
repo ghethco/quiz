@@ -6,8 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="sources")
-public class Source {
+@Table(name="learning_modules")
+public class LearningModule {
 	
 	@Id
 	@GeneratedValue
@@ -16,10 +16,10 @@ public class Source {
 	private String description;
 	private String type;
 	
-	public Source() {
+	public LearningModule() {
 	}
 
-	public Source(String code, String description, String type) {
+	public LearningModule(String code, String description, String type) {
 		this.code = code;
 		this.description = description;
 		this.type = type;
@@ -73,7 +73,7 @@ public class Source {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Source other = (Source) obj;
+		LearningModule other = (LearningModule) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;

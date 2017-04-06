@@ -17,7 +17,7 @@ import com.avires.quiz.dao.Answer;
 import com.avires.quiz.dao.Question;
 import com.avires.quiz.dao.QuestionStats;
 import com.avires.quiz.dao.QuestionsDao;
-import com.avires.quiz.dao.Source;
+import com.avires.quiz.dao.LearningModule;
 
 @Service("questionsService")
 public class QuestionsService {
@@ -26,7 +26,7 @@ public class QuestionsService {
 
 	private UsersService usersService;
 	private AnswersService answersService;
-	private SourcesService sourcesService;
+	private LearningModuleService learningModuleService;
 
 	private QuestionsDao questionsDao;
 
@@ -42,8 +42,8 @@ public class QuestionsService {
 	}
 
 	@Autowired
-	public void setSourcesService(SourcesService sourcesService) {
-		this.sourcesService = sourcesService;
+	public void setLearningModuleService(LearningModuleService learningModuleService) {
+		this.learningModuleService = learningModuleService;
 	}
 	
 	@Autowired
@@ -57,25 +57,14 @@ public class QuestionsService {
 	}
 	
 	public List<QuestionStats> getStats(String username) {
-		List<Source> all_sources = sourcesService.getSources();
-		List<Source> final_sources = new ArrayList<Source>();
-		for (Source src : all_sources) {
-			if (src.getDescription().contains("Glider Flying Handbook")
-					&& this.getNumQuestions(src) > 0) {
-				final_sources.add(src);
-			}
-		}
-		for (Source src : all_sources) {
-			if (src.getDescription().contains("FAA Test Questions")
-					&& this.getNumQuestions(src) > 0) {
-				final_sources.add(src);
-			}
-		}
-		List<QuestionStats> src_counts = new ArrayList<QuestionStats>();
+		List<LearningModule> all_learningModules
+				= learningModuleService.getLearningModules();
+		logger.info("all_learningModules = " + all_learningModules);
+		List<QuestionStats> lm_counts = new ArrayList<QuestionStats>();
 		double numQuestions, numGood, pctDone = 0;
-		for (Source src: final_sources) {
-			numQuestions = this.getNumQuestions(src);
-			numGood = this.getNumGood(src, username);
+		for (LearningModule lm: all_learningModules) {
+			numQuestions = this.getNumQuestions(lm);
+			numGood = this.getNumGood(lm, username);
 			if (numQuestions > 0) {
                 pctDone = (numQuestions - numGood) / numQuestions * 100;
 			} else {
@@ -87,24 +76,24 @@ public class QuestionsService {
 			int nQ = (int)Math.round(numQuestions);
 			int nG = (int)Math.round(numGood);
 			int pD = (int)Math.round(pctDone);
-			QuestionStats qstats = new QuestionStats(src, nQ, nQ - nG, pD);
-			src_counts.add(qstats);
+			QuestionStats qstats = new QuestionStats(lm, nQ, nQ - nG, pD);
+			lm_counts.add(qstats);
 		}
-		return (src_counts);
+		return (lm_counts);
 	}
 
 	
-	public int getNumQuestions(Source source) {
-		int nquestions = (int)questionsDao.getNumQuestions(source);
+	public int getNumQuestions(LearningModule learningModule) {
+		int nquestions = (int)questionsDao.getNumQuestions(learningModule);
 		return (nquestions);
 	}
 	
-	public int getNumGood(Source source, String username) {
-		return(this.getAllGood(source.getId(), username).size());
+	public int getNumGood(LearningModule learningModule, String username) {
+		return(this.getAllGood(learningModule.getId(), username).size());
 	}
 	
-	public List<Question> getQuestions(int source_id) {
-		return(questionsDao.getQuestions(source_id));
+	public List<Question> getQuestions(int learningModule_id) {
+		return(questionsDao.getQuestions(learningModule_id));
 	}
 	
 	public Question getRandomQuestion(List<Question> questions) {
@@ -114,10 +103,10 @@ public class QuestionsService {
         return(questions.get(index));
 	}
 	
-	public List<QandA> getAllGood(int source_id, String username) {
-		List<Question> all_source = this.getQuestions(source_id);
+	public List<QandA> getAllGood(int learningModule_id, String username) {
+		List<Question> all_learningModules = this.getQuestions(learningModule_id);
 		List<QandA> all_good = new ArrayList<QandA>();
-		for (Question qu : all_source) {
+		for (Question qu : all_learningModules) {
 			Answer ans = answersService.getAnswer(username, qu.getId());
 			QandA qna = new QandA(qu, ans);
 			if (this.isGoodQuestion(qna)) {
@@ -130,11 +119,11 @@ public class QuestionsService {
 	/*
 	 * This is the normal call from the client, requesting a question
 	 */
-	public QandA getQandA(int source_id, String username, boolean new_quiz) {
+	public QandA getQandA(int learningModule_id, String username, boolean new_quiz) {
 		int status = 0;
 		QandA qna = null;
 		if (current_quiz == null || current_quiz.size() == 0 || new_quiz) {
-			status = this.newQuiz(source_id, num_questions, username);
+			status = this.newQuiz(learningModule_id, num_questions, username);
 			logger.info("newQuiz returns: " + status);
 		}
 		if (status == 0) {
@@ -146,14 +135,14 @@ public class QuestionsService {
         return(qna);
 	}
 
-	public int newQuiz(int source_id, int nQuestions, String username) {
-		logger.info("newQuiz: source_id = " + source_id + " nQuestions = " +
+	public int newQuiz(int learningModule_id, int nQuestions, String username) {
+		logger.info("newQuiz: learningModule_id = " + learningModule_id + " nQuestions = " +
 				nQuestions + " username = " + username);
 		current_quiz = new ArrayList<QandA>();
 		int num_tries = 0;
 		boolean have_quiz = false;
 		while (!have_quiz) {
-			List<Question> questions = this.getQuestions(source_id);
+			List<Question> questions = this.getQuestions(learningModule_id);
             Question question = this.getRandomQuestion(questions);
             logger.info("question = " + question.toString());
             Answer answer =
@@ -166,7 +155,7 @@ public class QuestionsService {
                 current_quiz.add(qna);
             }
             if (++num_tries > max_tries) {
-            	current_quiz = this.getAllGood(source_id, username);
+            	current_quiz = this.getAllGood(learningModule_id, username);
             	if (current_quiz.size() == 0) {
                     return(1);	/* could not build a quiz */
             	}
@@ -297,10 +286,10 @@ public class QuestionsService {
 		return qna;
 	}
 	
-	public void newQuizByType(int source_id, String type, int nQuestions) {
+	public void newQuizByType(int learningModule_id, String type, int nQuestions) {
 		current_quiz = new ArrayList<QandA>();
 		for (int i = 0; i < nQuestions; i++) {
-			Question q = questionsDao.randomQuestion(source_id);
+			Question q = questionsDao.randomQuestion(learningModule_id);
 		}
 		return;
 	}

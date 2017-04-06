@@ -14,7 +14,6 @@ public class Question {
 	@Id
 	@GeneratedValue
 	private int id;
-	private int faa_num;
 	private String correct;
 	private String question;
 	private String before_image;
@@ -28,18 +27,16 @@ public class Question {
 	private String answer6;
 	
 	@ManyToOne
-	@JoinColumn(name="sources_id")
-	private Source source;
+	@JoinColumn(name="learning_modules_id")
+	private LearningModule learningModule;
 	
 	public Question() {
 	}
 
-	public Question(int faa_num, String correct, String question,
-			String before_image, String after_image, String type,
-			String answer1, String answer2, String answer3, String answer4,
-			String answer5, String answer6, Source source) {
-		super();
-		this.faa_num = faa_num;
+	public Question(String correct, String question, String before_image,
+			String after_image, String type, String answer1, String answer2,
+			String answer3, String answer4, String answer5, String answer6,
+			LearningModule learningModule) {
 		this.correct = correct;
 		this.question = question;
 		this.before_image = before_image;
@@ -51,15 +48,15 @@ public class Question {
 		this.answer4 = answer4;
 		this.answer5 = answer5;
 		this.answer6 = answer6;
-		this.source = source;
+		this.learningModule = learningModule;
 	}
 
-	public int getFaa_num() {
-		return faa_num;
+	public int getId() {
+		return id;
 	}
 
-	public void setFaa_num(int faa_num) {
-		this.faa_num = faa_num;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getCorrect() {
@@ -150,16 +147,12 @@ public class Question {
 		this.answer6 = answer6;
 	}
 
-	public Source getSource() {
-		return source;
+	public LearningModule getLearningModule() {
+		return learningModule;
 	}
 
-	public void setSource(Source source) {
-		this.source = source;
-	}
-
-	public int getId() {
-		return id;
+	public void setLearningModule(LearningModule learningModule) {
+		this.learningModule = learningModule;
 	}
 
 	@Override
@@ -177,11 +170,10 @@ public class Question {
 		result = prime * result
 				+ ((before_image == null) ? 0 : before_image.hashCode());
 		result = prime * result + ((correct == null) ? 0 : correct.hashCode());
-		result = prime * result + faa_num;
 		result = prime * result + id;
 		result = prime * result
-				+ ((question == null) ? 0 : question.hashCode());
-		result = prime * result + ((source == null) ? 0 : source.hashCode());
+				+ ((learningModule == null) ? 0 : learningModule.hashCode());
+		result = prime * result + ((question == null) ? 0 : question.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -240,19 +232,17 @@ public class Question {
 				return false;
 		} else if (!correct.equals(other.correct))
 			return false;
-		if (faa_num != other.faa_num)
-			return false;
 		if (id != other.id)
+			return false;
+		if (learningModule == null) {
+			if (other.learningModule != null)
+				return false;
+		} else if (!learningModule.equals(other.learningModule))
 			return false;
 		if (question == null) {
 			if (other.question != null)
 				return false;
 		} else if (!question.equals(other.question))
-			return false;
-		if (source == null) {
-			if (other.source != null)
-				return false;
-		} else if (!source.equals(other.source))
 			return false;
 		if (type == null) {
 			if (other.type != null)
@@ -264,13 +254,12 @@ public class Question {
 
 	@Override
 	public String toString() {
-		return "Question [id=" + id + ", faa_num=" + faa_num + ", correct="
-				+ correct + ", question=" + question + ", before_image="
-				+ before_image + ", after_image=" + after_image + ", type="
-				+ type + ", answer1=" + answer1 + ", answer2=" + answer2
-				+ ", answer3=" + answer3 + ", answer4=" + answer4
-				+ ", answer5=" + answer5 + ", answer6=" + answer6 + ", source="
-				+ source + "]";
+		return "Question [id=" + id + ", correct=" + correct + ", question="
+				+ question + ", before_image=" + before_image + ", after_image="
+				+ after_image + ", type=" + type + ", answer1=" + answer1
+				+ ", answer2=" + answer2 + ", answer3=" + answer3 + ", answer4="
+				+ answer4 + ", answer5=" + answer5 + ", answer6=" + answer6
+				+ ", learningModule=" + learningModule + "]";
 	}
 	
 }

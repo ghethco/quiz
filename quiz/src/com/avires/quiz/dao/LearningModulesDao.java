@@ -19,8 +19,8 @@ import com.avires.quiz.controllers.LoginController;
 // for translating Hibernate exceptions into Spring exceptions, see
 // dao-context.xml
 @Transactional
-@Component("sourcesDao")
-public class SourcesDao {
+@Component("learningmoduleDao")
+public class LearningModulesDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -32,54 +32,54 @@ public class SourcesDao {
 	}
 
 	@Transactional
-	public int create(Source source) {
-		logger.info("in SourcesDao.create, source = " + source.toString());
-		session().save(source);
-		return (source.getId());
+	public int create(LearningModule learningModule) {
+		logger.info("in LearningModuleDao.create, learningModule = " + learningModule.toString());
+		session().save(learningModule);
+		return (learningModule.getId());
 	}
 	
-	public void saveOrUpdate(Source source) {
-		logger.info("in SourcesDao.saveOrUpdate, source = " + source.toString());
-		session().saveOrUpdate(source);
+	public void saveOrUpdate(LearningModule learningModule) {
+		logger.info("in LearningModuleDao.saveOrUpdate, learningModule = " + learningModule.toString());
+		session().saveOrUpdate(learningModule);
 	}
 	
-	public List<Source> getSources() {
-		Criteria crit = session().createCriteria(Source.class);
+	public List<LearningModule> getLearningModules() {
+		Criteria crit = session().createCriteria(LearningModule.class);
 		return (crit.list());
 	}
 
 	@SuppressWarnings("unchecked")
-	public Source getSource(int question_id) {
+	public LearningModule getLearningModule(int question_id) {
 
-        String query_string = "from Source question.id=:question_id";
+        String query_string = "from LearningModule question.id=:question_id";
 		Query query = session().createQuery(query_string);
 		query.setInteger("question_id", question_id);
 
-		return (Source)query.uniqueResult();
+		return (LearningModule)query.uniqueResult();
 	}
 	
-	public Source getSource(Question question) {
+	public LearningModule getLearningModule(Question question) {
 
 		Criteria crit = session().createCriteria(Question.class);
 		crit.createAlias("question", "q");
 		crit.add(Restrictions.eq("q.id", question.getId()));
 
-		return (Source)crit.uniqueResult();
+		return (LearningModule)crit.uniqueResult();
 	}
 
-	public int resetSource(String username, String source) {
+	public int resetLearningModule(String username, String learningModule) {
 		/*
 		 * A two stage (sub)query is necessary because MySQL can't handle
 		 * a "cross join" in a delete query, see:
 		 * http://stackoverflow.com/questions/7246563/
 		 * 		hibernate-exception-on-mysql-cross-join-query
 		 */
-		String query_string = "delete from Source where user=:user "
+		String query_string = "delete from LearningModule where user=:user "
 				+ "and question.id in"
-				+ " (select id from Question where source=:source)";
+				+ " (select id from Question where learningModule=:learningModule)";
 		Query query = session().createQuery(query_string);
 		query.setString("user", username);
-		query.setString("source", source);
+		query.setString("learningModule", learningModule);
 		return(query.executeUpdate());
 	}
 }
